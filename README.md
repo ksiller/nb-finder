@@ -46,7 +46,6 @@ Before running the plugin, ensure that the JAVA_HOME environment variable is set
 
 Then run:
 ```
-ImageJ-linux --headless --ij2 --run ../nb-finder/NB_Preprocess.py 'outputDir="/Users/khs3z/Desktop/",imgfile="lobe1.tif",nucleiCh=3,membraneCh=1,medianXY=3.000000,medianZ=2.000000,adjust="True",show="False"'
+ImageJ-linux64 --headless --ij2 --run ../nb-finder/NB_Preprocess.py 'outputDir="/Users/khs3z/Desktop/",imgfile="lobe1.tif",nucleiCh=3,membraneCh=1,medianXY=3.000000,medianZ=2.000000,adjust="True",show="False"'
 ```
 
-/Applications/Fiji.app/java/macosx/jdk1.8.0_172.jre/jre/ 
