@@ -68,4 +68,5 @@ if show:
     nucleiImg.show()
 
 logger.log(LogLevel.INFO, "Completed %s" % imgfile.getPath())
+os.system("kill %d" % os.getpid())
 
