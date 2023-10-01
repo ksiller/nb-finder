@@ -21,7 +21,7 @@ conda create -f environment.yaml
 
 2. In Fiji, go to Plugins > Install….
 
-3. In the first pop-up dialog browse to and select the `NB_Preprocess` script. Click Open.
+3. In the first pop-up dialog browse to and select the `NB_Preprocess.py` script. Click Open.
 
 4. In the second dialog window, select the plugins directory (or a subdirectory within plugins) to where the script should be installed. Click Save.
 
