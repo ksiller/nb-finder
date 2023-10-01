@@ -62,7 +62,7 @@ This is a Slurm job script to run the 2-step processing on a GPU device in an HP
 #SBATCH -t 1:00:00
 
 # Fiji preprocessing
-module load java
+module load fiji
 ImageJ-linux64 --headless --ij2 --mem=64G --run nb-finder/NB_Preprocess.py 'outputDir="output",imgfile="lobe1.tif",nucleiCh=3,membraneCh=1,medianXY=3.000000,medianZ=2.000000,adjust="True",show="False"'
 # this will create a lobe1-NB.tif file with the segmentation mask
 
