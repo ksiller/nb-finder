@@ -15,7 +15,7 @@ cd nbfinder
 conda create -f environment.yaml 
 ```
 
-# Fiji Plugin installation
+## Optional: Fiji Plugin installation (only needed for interactive use)
 
 1. Start Fiji.
 
