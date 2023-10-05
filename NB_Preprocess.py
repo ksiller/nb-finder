@@ -1,5 +1,6 @@
 #@ File (label="Input image") imgfile
-#@ File (label="Output directory", style="directory", required=False) outputDir
+#@ File (label="Output directory", style="directory", required=False) outputdir
+#@ String (label="Output file (optional)", style="file", required=False) outputfile
 #@ Integer (label="Nuclei channel", min=1, max=7, value=1) nucleiCh
 #@ Integer (label="Membrane channel", min=1, max=7, value=2) membraneCh
 #@ Float (label="X-Y median filter", min=1.0, max=10.0, step=0.1, value=2.0) medianXY
@@ -20,20 +21,22 @@ from ij.plugin.filter import ParticleAnalyzer
 from jarray import array
 
 inputimg = IJ.openImage(imgfile.getPath())
-if outputDir is None:
-    outputDir = imgfile.getParent(outputDir)
+if outputdir is None:
+    outputdir = imgfile.getParent(outputdir)
 else:
-    outputDir = outputDir.getAbsolutePath()
+    outputdir = outputdir.getAbsolutePath()
                 
 logger.log(LogLevel.INFO, "Processing of %s" % imgfile.getPath())
 if show and GraphicsEnvironment.isHeadless():
     show = False
     logger.log(LogLevel.INFO, 'Running headless, ignoring "show" option.')
 logger.log(LogLevel.INFO, "nucleiCh=%d, membraneCh=%d, medianXY=%f, medianZ=%f, adjust=%s, show=%s" % (nucleiCh, membraneCh, medianXY, medianZ, adjust, show))
-logger.log(LogLevel.INFO, "outputDir=%s" % outputDir)
+logger.log(LogLevel.INFO, "outputdir=%s" % outputdir)
 
-title = inputimg.getTitle()
-title = title[:title.rindex(".")]
+if outputfile is None:
+    outputfile = inputimg.getTitle()
+outputfile = outputfile[:outputfile.rindex(".")] + "-NB.tif"
+print outputfile
 
 channels = ChannelSplitter.split(inputimg)
 nucleiCh = min(nucleiCh, len(channels))
@@ -51,7 +54,7 @@ IJ.run(nucleiImg, "Median 3D...", "x=" + str(medianXY) + " y=" + str(medianXY) +
 if membraneCh > 0 and membraneCh <= len(channels):
     membraneImg = channels[membraneCh-1].duplicate()
     IJ.run(membraneImg, "Despeckle", "stack")
-    membraneImg.setTitle(title + "-Membrane.tif")
+    #membraneImg.setTitle(outputfile + "-Membrane.tif")
     #membraneFile = os.path.join(outputDir, membraneImg.getTitle())
     #logger.log(LogLevel.INFO, "Saving %s" % membraneFile)
     #IJ.saveAsTiff(membraneImg, membraneFile)
@@ -60,13 +63,15 @@ if membraneCh > 0 and membraneCh <= len(channels):
     nucleiImg = ImageCalculator.run(nucleiImg.duplicate(), membraneImg, "Subtract create 32-bit stack")
     IJ.run(nucleiImg, "Median 3D...", "x=" + str(medianXY) + " y=" + str(medianXY) +" z=" + str(medianZ))
 
-nucleiImg.setTitle(title + "-NB.tif")
-nucleiFile = os.path.join(outputDir, nucleiImg.getTitle())
+nucleiImg.setTitle(outputfile)
+nucleiFile = os.path.join(outputdir, outputfile)
 logger.log(LogLevel.INFO, "Saving %s" % nucleiFile)
 IJ.saveAsTiff(nucleiImg, nucleiFile)
 if show:
     nucleiImg.show()
 
 logger.log(LogLevel.INFO, "Completed %s" % imgfile.getPath())
-os.system("kill %d" % os.getpid())
+
+if GraphicsEnvironment.isHeadless():
+    os.system("kill %d" % os.getpid())
 
