@@ -1,30 +1,34 @@
 #!/usr/bin/env bash
 
 #SBATCH -J cellpose # A single job name for the array
-#SBATCH --ntasks-per-node=10 # one core
-#SBATCH -N 1 # on one node
-#SBATCH -t 0:30:00 ### 15 seconds
+#SBATCH -t 0:15:00 ### 15 seconds
 #SBATCH --mem 64G
+#SBATCH -c 16
 #SBATCH -o /scratch/aob2x/logs/demo_1.%A_%a.out # Standard output
 #SBATCH -e /scratch/aob2x/logs/demo_1.%A_%a.err # Standard error
 #SBATCH -p gpu
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=2 PATH_TO_THIS_FILE
+### run as: sbatch --array=1 ~/nb-finder/cellpose_script.sh
 ### sacct -j XXXXXXXXX
 ### cat /scratch/tn6a/logs/demo_1.*.err
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
+### SLURM_ARRAY_TASK_ID=1
 
 ### load modules
   module load fiji/1.53t
   module load anaconda/2020.11-py3.8 parallel/20200322
   module load gcc/9.2.0 openmpi/3.1.6 R/4.2.1
 
-### paths path
+### path path
+  input_files_txt=/scratch/aob2x/cellpose_results/inputFiles.txt
   repo_path=/home/aob2x/nb-finder
   results_path=/scratch/aob2x/cellpose_results/
-  img_file=/scratch/aob2x/cellpose_output/me10247.animal9.tif
+  img_file=$( cat ${input_files_txt} | sed "${SLURM_ARRAY_TASK_ID}q;d" )
+  img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
+
+  echo ${img_file}
 
 ## set up RAM disk
   ### SLURM_JOB_ID=1
@@ -37,7 +41,7 @@
 ### function
   runCellpose() {
       ### specify parameters
-        iter=${1}
+        iter=${1} # iter=2
         FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f1 -d',' )
         CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f2 -d',' )
         ANISOTROPY=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f3 -d',' )
@@ -47,7 +51,7 @@
         img_file=${2}
         img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
-        output_path=${3}
+        output_path=${3} # output_path=$tmpdir
         output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}.tif
         ls -lh ${img_file}
         echo $output_file
@@ -71,7 +75,7 @@
 
         cellpose \
         --image_path ${NB_output_file} \
-        --save_txt --verbose --do_3D \
+        --save_tif --verbose --do_3D \
         --use_gpu \
         --do_3D \
         --pretrained_model nuclei \
@@ -82,9 +86,11 @@
         --anisotropy 0.5
 
       ### parse cellpose
-        repo_path=${4}
+        repo_path=${4} #
         cellpose_output_file=$( echo ${NB_output_file} | sed 's/\.tif/_seg.npy/g' )
         Rscript --vanilla ${repo_path}/NB_parse.R ${cellpose_output_file}
+
+        cat ${cellpose_output_file}.nMasks | sed "s/$/,${medianxy},${medianz},${FLOW_THRESHOLD},${CELLPROB_THRESHOLD},${ANISOTROPY}/g" > ${cellpose_output_file}.nMasks
 
       ### clean up
         rm ${cellpose_output_file}
@@ -95,7 +101,9 @@
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=2
+  nJobs=15
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
+  cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
+  rm -fr ${tmpdir}
