@@ -11,8 +11,8 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=1 ~/nb-finder/cellpose_script.sh
-### sacct -j 54064183
-### cat /scratch/aob2x/logs/demo_54064183_1.err
+### sacct -j 54064454
+### cat /scratch/aob2x/logs/demo_1.54064454_1.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
@@ -107,4 +107,5 @@
 ### save results and clean up
   ls -d ${tmpdir}/*.nMasks
   cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
+  cp ${tmpdir}/*.nMasks > ${results_path}/
   rm -fr ${tmpdir}
