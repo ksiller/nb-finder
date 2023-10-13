@@ -10,9 +10,9 @@
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=1 ~/nb-finder/cellpose_script.sh
-### sacct -j 54065089
-### cat /scratch/aob2x/logs/demo_1.54065089_1.out
+### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
+### sacct -j 54065520
+### cat /scratch/aob2x/logs/demo_1.54065520_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
@@ -98,8 +98,8 @@
       ### clean up
         ls -lha ${cellpose_output_file}
 
-        rm ${cellpose_output_file}
-        rm ${NB_output_file}
+        #rm ${cellpose_output_file}
+        #rm ${NB_output_file}
 
   }
   export -f runCellpose
@@ -113,4 +113,6 @@
   ls -lhd ${tmpdir}/*.nMasks
   cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
   cp ${tmpdir}/*.nMasks > ${results_path}/.
+  cp ${tmpdir}/*.seg.npy > ${results_path}/.
+
   rm -fr ${tmpdir}
