@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #SBATCH -J cellpose # A single job name for the array
-#SBATCH -t 0:45:00 ### 15 seconds
+#SBATCH -t 0:15:00 ### 15 seconds
 #SBATCH --mem 64G
 #SBATCH -c 16
 #SBATCH -o /scratch/aob2x/logs/demo_1.%A_%a.out # Standard output
@@ -107,7 +107,7 @@
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=50
+  nJobs=5
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
