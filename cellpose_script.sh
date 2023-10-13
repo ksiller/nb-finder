@@ -110,9 +110,9 @@
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
-  ls -lhd ${tmpdir}/*.nMasks
+  ls -lhd ${tmpdir}/*
   cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
   cp ${tmpdir}/*.nMasks > ${results_path}/.
-  cp ${tmpdir}/*.seg.npy > ${results_path}/.
+  cp ${tmpdir}/*seg.npy > ${results_path}/.
 
   rm -fr ${tmpdir}
