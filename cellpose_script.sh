@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #SBATCH -J cellpose # A single job name for the array
-#SBATCH -t 0:15:00 ### 15 seconds
+#SBATCH -t 0:45:00 ### 15 seconds
 #SBATCH --mem 64G
 #SBATCH -c 16
 #SBATCH -o /scratch/aob2x/logs/demo_1.%A_%a.out # Standard output
@@ -11,7 +11,7 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
-### sacct -j 54068656
+### sacct -j 54068792
 ### cat /scratch/aob2x/logs/demo_1.54068469_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
@@ -99,21 +99,21 @@
       ### clean up
         ls -lha ${cellpose_output_file}
 
-        #rm ${cellpose_output_file}
-        #rm ${NB_output_file}
+        rm ${cellpose_output_file}
+        rm ${NB_output_file}
 
   }
   export -f runCellpose
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=4
+  nJobs=100
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
   ls -lhd ${tmpdir}/*
   cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
-  cp ${tmpdir}/*.nMasks ${results_path}/.
-  cp ${tmpdir}/*seg.npy ${results_path}/.
+  # cp ${tmpdir}/*.nMasks ${results_path}/.
+  # cp ${tmpdir}/*seg.npy ${results_path}/.
 
   rm -fr ${tmpdir}
