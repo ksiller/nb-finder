@@ -11,5 +11,5 @@ library(data.table)
 
 np <- import("numpy")
 mat <- np$load(file, allow_pickle=T)
-write.csv(data.table(file=file, nMasks=dim(mat[[1]]$masks)[1]), quote=F, row.names=F,
+write.table(data.table(file=file, nMasks=dim(mat[[1]]$masks)[1]), quote=F, row.names=F, sep=",", col.names=F,
           file=paste(file, ".nMasks", sep=""))
