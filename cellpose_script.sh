@@ -21,8 +21,10 @@
   module load anaconda/2020.11-py3.8 parallel/20200322
   module load gcc/9.2.0 openmpi/3.1.6 R/4.2.1
 
-### repository path
+### paths path
   repo_path=/home/aob2x/nb-finder
+  results_path=/scratch/aob2x/cellpose_results/
+  img_file=/scratch/aob2x/cellpose_output/me10247.animal9.tif
 
 ## set up RAM disk
   ### SLURM_JOB_ID=1
@@ -32,55 +34,68 @@
 
   echo "Temp dir is $tmpdir"
 
+### function
+  runCellpose() {
+      ### specify parameters
+        iter=${1}
+        FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f1 -d',' )
+        CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f2 -d',' )
+        ANISOTROPY=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f3 -d',' )
+        medianxy=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f4 -d',' )
+        medianz=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f5 -d',' )
 
-### specify parameters
-  iter=2
-  FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f1 -d',' )
-  CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f2 -d',' )
-  ANISOTROPY=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f3 -d',' )
-  medianxy=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f4 -d',' )
-  medianz=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f5 -d',' )
+        img_file=${2}
+        img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
-  img_file=/scratch/aob2x/cellpose_output/me10247.animal9.tif
-  img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
+        output_path=${3}
+        output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}.tif
+        ls -lh ${img_file}
+        echo $output_file
 
-  output_path=${tmpdir}
-  output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}.tif
-  ls -lh ${img_file}
-  echo $output_file
+        params_template='outputdir="OUTPUT",imgfile="INPUT",outputfile="FILE",nucleiCh=3,membraneCh=1,medianXY="xy",medianZ="z",adjust="True",show="False"'
+        params_template_1=$( echo ${params_template} | sed "s|OUTPUT|${output_path}|g" )
+        params_template_2=$( echo ${params_template_1} | sed "s|INPUT|${img_file}|g" )
+        params_template_3=$( echo ${params_template_2} | sed "s|FILE|${output_file}|g" )
+        params_template_4=$( echo ${params_template_3} | sed "s|xy|${medianxy}|g" )
+        params_template_5=$( echo ${params_template_4} | sed "s|z|${medianz}|g" )
 
-  params_template='outputdir="OUTPUT",imgfile="INPUT",outputfile="FILE",nucleiCh=3,membraneCh=1,medianXY="xy",medianZ="z",adjust="True",show="False"'
-  params_template_1=$( echo ${params_template} | sed "s|OUTPUT|${output_path}|g" )
-  params_template_2=$( echo ${params_template_1} | sed "s|INPUT|${img_file}|g" )
-  params_template_3=$( echo ${params_template_2} | sed "s|FILE|${output_file}|g" )
-  params_template_4=$( echo ${params_template_3} | sed "s|xy|${medianxy}|g" )
-  params_template_5=$( echo ${params_template_4} | sed "s|z|${medianz}|g" )
+        echo ${params_template_5}
 
-  echo ${params_template_5}
+      ### first run NB_preprocess
+        ImageJ-linux64 --headless --ij2 --mem=64G --run /home/aob2x/nb-finder/NB_Preprocess.py $params_template_5
 
-### first run NB_preprocess
-  ImageJ-linux64 --headless --ij2 --mem=64G --run /home/aob2x/nb-finder/NB_Preprocess.py $params_template_5
+      ### run cellpose
+        source activate cellpose
 
-### run cellpose
-  source activate cellpose
+        NB_output_file=$( echo ${output_file} | sed 's/\.tif/-NB.tif/g' )
 
-  NB_output_file=$( echo ${output_file} | sed 's/\.tif/-NB.tif/g' )
+        cellpose \
+        --image_path ${NB_output_file} \
+        --save_txt --verbose --do_3D \
+        --use_gpu \
+        --do_3D \
+        --pretrained_model nuclei \
+        --diameter 30 \
+        --chan 0 \
+        --flow_threshold 0.4 \
+        --cellprob_threshold 0.5 \
+        --anisotropy 0.5
 
-  cellpose \
-  --image_path ${NB_output_file} \
-  --save_tif --save_txt --verbose --do_3D --save_outlines \
-  --use_gpu \
-  --do_3D \
-  --pretrained_model nuclei \
-  --diameter 30 \
-  --chan 0 \
-  --flow_threshold 0.4 \
-  --cellprob_threshold 0.5 \
-  --anisotropy 0.5
+      ### parse cellpose
+        repo_path=${4}
+        cellpose_output_file=$( echo ${NB_output_file} | sed 's/\.tif/_seg.npy/g' )
+        Rscript --vanilla ${repo_path}/NB_parse.R ${cellpose_output_file}
 
-### parse cellpose
-  cellpose_output_file=$( echo ${NB_output_file} | sed 's/\.tif/-NB_seg.npy/g' )
-  Rscript --vanilla ${repo_path}/NB_parse.R ${output_file}-NB_seg.npy
+      ### clean up
+        rm ${cellpose_output_file}
+        rm ${NB_output_file}
+
+  }
+  export -f runCellpose
+
+### iterate through
+  nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
+  nJobs=2
+  parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
-  
