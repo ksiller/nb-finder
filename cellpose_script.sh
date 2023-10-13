@@ -11,8 +11,8 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=1 ~/nb-finder/cellpose_script.sh
-### sacct -j XXXXXXXXX
-### cat /scratch/tn6a/logs/demo_1.*.err
+### sacct -j 54064183
+### cat /scratch/aob2x/logs/demo_54064183_1.err
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
@@ -66,7 +66,7 @@
         echo ${params_template_5}
 
       ### first run NB_preprocess
-        ImageJ-linux64 --headless --ij2 --mem=64G --run /home/aob2x/nb-finder/NB_Preprocess.py $params_template_5
+        ImageJ-linux64 --headless --ij2 --mem=48G --run /home/aob2x/nb-finder/NB_Preprocess.py $params_template_5
 
       ### run cellpose
         source activate cellpose
@@ -75,7 +75,7 @@
 
         cellpose \
         --image_path ${NB_output_file} \
-        --save_tif --verbose --do_3D \
+        --save_tif --do_3D \
         --use_gpu \
         --do_3D \
         --pretrained_model nuclei \
@@ -105,5 +105,6 @@
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
+  ls -d ${tmpdir}/*.nMasks
   cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
   rm -fr ${tmpdir}
