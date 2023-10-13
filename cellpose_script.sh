@@ -11,8 +11,8 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
-### sacct -j 54065520
-### cat /scratch/aob2x/logs/demo_1.54065520_2.out
+### sacct -j 54068209
+### cat /scratch/aob2x/logs/demo_1.54068209_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
