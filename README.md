@@ -12,7 +12,7 @@ In order to use the plugin, you will need the Fij application (available here ht
 ```
 git clone https://github.com/ksiller/nb-finder.git
 cd nbfinder
-conda create -f environment.yaml 
+conda create -f environment.yaml
 ```
 
 ## Optional: Fiji Plugin installation (only needed for interactive use)
@@ -33,15 +33,15 @@ conda create -f environment.yaml
 
 The `NB_Process.py` script provides the following command line options
 
-* `imgfile`: Input image 
-* `outputdir` (optional): Output directory. If not specified,the path of the input image (imgfile) is used as outputdir 
-* `outputfile` (optional): Output file. If not specified, the outputfile is composed of the input image file name +"-NB.tif". 
+* `imgfile`: Input image
+* `outputdir` (optional): Output directory. If not specified,the path of the input image (imgfile) is used as outputdir
+* `outputfile` (optional): Output file. If not specified, the outputfile is composed of the input image file name +"-NB.tif".
 * `nucleiCh`: channel # that contains the nuclei signal, min=1, max=7, default=1
 * `membraneCh`: channel # that contains an optional Membrane signal to aid with demarcation of adjacent nuclei, min=1, max=7, default=0 (no membrane channel)
 * `medianXY`: X-Y median filter, min=1.0, max=10.0, default=2.0
-* `medianZ`: Z median filter, min=1.0, max=10.0, default=3.0 
+* `medianZ`: Z median filter, min=1.0, max=10.0, default=3.0
 * `adjust`: Adjust brightness of each focal plane, default=True
-* `show`: Show output image, default=False. Ignored in headless mode   
+* `show`: Show output image, default=False. Ignored in headless mode
 
 ## MacOS
 
@@ -81,6 +81,7 @@ ImageJ-linux64 --headless --ij2 --mem=64G --run nb-finder/NB_Preprocess.py 'outp
 # Cellpose
 module load anaconda
 source activate cellpose
+
 cellpose --image_path lobe1-NB.tif --use_gpu --do_3D --save_tif --pretrained_model nuclei --diameter 30 --chan 0 --verbose
 ```
 
