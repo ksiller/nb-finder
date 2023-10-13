@@ -11,8 +11,8 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
-### sacct -j 54068209
-### cat /scratch/aob2x/logs/demo_1.54068209_2.out
+### sacct -j 54068397
+### cat /scratch/aob2x/logs/demo_1.54068397_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
@@ -31,10 +31,11 @@
   echo ${img_file}
 
 ## set up RAM disk
-  ### SLURM_JOB_ID=1
+  ### SLURM_JOB_ID=1;SLURM_ARRAY_TASK_ID=1
   [ ! -d /dev/shm/$USER/ ] && mkdir /dev/shm/$USER/
   [ ! -d /dev/shm/$USER/${SLURM_JOB_ID} ] && mkdir /dev/shm/$USER/${SLURM_JOB_ID}
-  tmpdir=/dev/shm/$USER/${SLURM_JOB_ID}
+  [ ! -d /dev/shm/$USER/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID} ] && mkdir /dev/shm/$USER/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}
+  tmpdir=/dev/shm/$USER/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}
 
   echo "Temp dir is $tmpdir"
 
@@ -106,7 +107,7 @@
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=2
+  nJobs=4
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
