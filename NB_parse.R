@@ -16,7 +16,7 @@ np <- import("numpy")
 mat <- np$load(file, allow_pickle=T)
 
 tmp <- mat[[1]]$masks
-nMasks <- unique(unlist(sapply(asplit(tmp, 1), function(x) unique(expand.grid(x)$Var1))))
+nMasks <- length(unique(unlist(sapply(asplit(tmp, 1), function(x) unique(expand.grid(x)$Var1)))))
 nMasks
 
 write.table(data.table(file=file, nMasks=nMasks, quote=F, row.names=F, sep=",", col.names=F,
