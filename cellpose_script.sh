@@ -11,8 +11,8 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
-### sacct -j 54068792
-### cat /scratch/aob2x/logs/demo_1.54068469_2.out
+### sacct -j 54068919
+### cat /scratch/aob2x/logs/demo_1.54068919_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
@@ -107,7 +107,7 @@
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=100
+  nJobs=50
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
