@@ -3,6 +3,7 @@
 args = commandArgs(trailingOnly=TRUE)
 file=as.character(args[1])
 
+#file="me10247.animal10.0.0.0.0.0-NB_seg.npy"
 
 
 # load reticulate and use it to load numpy
