@@ -11,7 +11,7 @@
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
-### sacct -j 54068469
+### sacct -j 54068656
 ### cat /scratch/aob2x/logs/demo_1.54068469_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
@@ -91,7 +91,7 @@
         cellpose_output_file=$( echo ${NB_output_file} | sed 's/\.tif/_seg.npy/g' )
         Rscript --vanilla ${repo_path}/NB_parse.R ${cellpose_output_file}
 
-        cat ${cellpose_output_file}.nMasks | sed "s/$/,${medianxy},${medianz},${FLOW_THRESHOLD},${CELLPROB_THRESHOLD},${ANISOTROPY}/g" > ${cellpose_output_file}.nMasks
+        #cat ${cellpose_output_file}.nMasks | sed "s/$/,${medianxy},${medianz},${FLOW_THRESHOLD},${CELLPROB_THRESHOLD},${ANISOTROPY}/g" > ${cellpose_output_file}.nMasks
 
         echo "Results are:"
         cat ${cellpose_output_file}.nMasks
