@@ -24,6 +24,15 @@
 ### repository path
   repo_path=/home/aob2x/nb-finder
 
+## set up RAM disk
+  ### SLURM_JOB_ID=1
+  [ ! -d /dev/shm/$USER/ ] && mkdir /dev/shm/$USER/
+  [ ! -d /dev/shm/$USER/${SLURM_JOB_ID} ] && mkdir /dev/shm/$USER/${SLURM_JOB_ID}
+  tmpdir=/dev/shm/$USER/${SLURM_JOB_ID}
+
+  echo "Temp dir is $tmpdir"
+
+
 ### specify parameters
   iter=2
   FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f1 -d',' )
@@ -35,8 +44,8 @@
   img_file=/scratch/aob2x/cellpose_output/me10247.animal9.tif
   img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
-  output_path=/scratch/aob2x/cellpose_output
-  output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}
+  output_path=${tmpdir}
+  output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}.tif
   ls -lh ${img_file}
   echo $output_file
 
@@ -55,8 +64,10 @@
 ### run cellpose
   source activate cellpose
 
+  NB_output_file=$( echo ${output_file} | sed 's/\.tif/-NB.tif/g' )
+
   cellpose \
-  --image_path ${output_file}-NB.tif \
+  --image_path ${NB_output_file} \
   --save_tif --save_txt --verbose --do_3D --save_outlines \
   --use_gpu \
   --do_3D \
@@ -68,4 +79,8 @@
   --anisotropy 0.5
 
 ### parse cellpose
-  Rscript --vanilla ${repo_path}/NB_parse.R ${output_file}_seg.npy
+  cellpose_output_file=$( echo ${NB_output_file} | sed 's/\.tif/-NB_seg.npy/g' )
+  Rscript --vanilla ${repo_path}/NB_parse.R ${output_file}-NB_seg.npy
+
+### save results and clean up
+  
