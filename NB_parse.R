@@ -7,6 +7,7 @@ file=as.character(args[1])
 
 # load reticulate and use it to load numpy
 library(reticulate)
+library(data.table)
 
 np <- import("numpy")
 mat <- np$load(file, allow_pickle=T)
