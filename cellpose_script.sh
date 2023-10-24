@@ -4,15 +4,15 @@
 #SBATCH -t 0:15:00 ### 15 seconds
 #SBATCH --mem 64G
 #SBATCH -c 16
-#SBATCH -o /scratch/aob2x/logs/demo_1.%A_%a.out # Standard output
-#SBATCH -e /scratch/aob2x/logs/demo_1.%A_%a.err # Standard error
+#SBATCH -o /scratch/tn6a/logs/demo_1.%A_%a.out # Standard output
+#SBATCH -e /scratch/tn6a/logs/demo_1.%A_%a.err # Standard error
 #SBATCH -p gpu
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
 ### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
 ### sacct -j 54071009
-### cat /scratch/aob2x/logs/demo_1.54068919_2.out
+### cat /scratch/tn6a/logs/demo_1.54068919_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
@@ -22,9 +22,9 @@
   module load gcc/9.2.0 openmpi/3.1.6 R/4.2.1
 
 ### path path
-  input_files_txt=/scratch/aob2x/cellpose_results/inputFiles.txt
-  repo_path=/home/aob2x/nb-finder
-  results_path=/scratch/aob2x/cellpose_results/
+  input_files_txt=/scratch/tn6a/cellpose_results/inputFiles.txt
+  repo_path=/home/tn6a/nb-finder
+  results_path=/scratch/tn6a/cellpose_results/
   img_file=$( cat ${input_files_txt} | sed "${SLURM_ARRAY_TASK_ID}q;d" )
   img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
