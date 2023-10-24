@@ -10,7 +10,7 @@
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=2 ~/nb-finder/cellpose_script.sh
+### run as: sbatch --array=2 ~/cellpose_results/cellpose_script.sh
 ### sacct -j 54071009
 ### cat /scratch/tn6a/logs/demo_1.54068919_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
