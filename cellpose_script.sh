@@ -84,7 +84,7 @@
         --chan 0 \
         --flow_threshold 0.4 \
         --cellprob_threshold 0.5 \
-        --anisotropy 0.5 
+        --anisotropy 5
 
       ### parse cellpose
         repo_path=${4} #
