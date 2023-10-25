@@ -113,5 +113,6 @@
 ### save results and clean up
   ls -lhd ${tmpdir}/*
   cat ${tmpdir}/*.nMasks > ${results_path}/${img_stem}.nMasks.txt
-  
+  cp ${tmpdir}/*-NB_cp_masks.tif > ${results_path}/.
+
   rm -fr ${tmpdir}
