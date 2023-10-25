@@ -82,9 +82,9 @@
         --pretrained_model nuclei \
         --diameter 30 \
         --chan 0 \
-        --flow_threshold ${FLOW_THRESHOLD} \
-        --cellprob_threshold ${CELLPROB_THRESHOLD} \
-        --anisotropy ${ANISOTROPY}
+        --flow_threshold 0.4 \
+        --cellprob_threshold 0.5 \
+        --anisotropy 0.5 
 
       ### parse cellpose
         repo_path=${4} #
