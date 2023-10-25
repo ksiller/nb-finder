@@ -67,7 +67,7 @@
         echo ${params_template_5}
 
       ### first run NB_preprocess
-        ImageJ-linux64 --headless --ij2 --mem=48G --run /home/aob2x/nb-finder/NB_Preprocess.py $params_template_5
+        ImageJ-linux64 --headless --ij2 --mem=48G --run /home/tn6a/nb-finder/NB_Preprocess.py $params_template_5
 
       ### run cellpose
         source activate cellpose
