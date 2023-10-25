@@ -22,7 +22,7 @@
   module load gcc/9.2.0 openmpi/3.1.6 R/4.2.1
 
 ### path path
-  input_files_txt=/scratch/tn6a/cellpose_results/inputFiles.txt
+  input_files_txt=/scratch/tn6a/cellpose_results/new_tifs.txt
   repo_path=/home/tn6a/nb-finder
   results_path=/scratch/tn6a/cellpose_results/
   img_file=$( cat ${input_files_txt} | sed "${SLURM_ARRAY_TASK_ID}q;d" )
