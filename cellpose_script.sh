@@ -4,8 +4,8 @@
 #SBATCH -t 0:15:00 ### 15 seconds
 #SBATCH --mem 64G
 #SBATCH -c 16
-#SBATCH -o /scratch/tn6a/logs/demo_1.%A_%a.out # Standard output
-#SBATCH -e /scratch/tn6a/logs/demo_1.%A_%a.err # Standard error
+#SBATCH -o /standard/vol191/siegristlab/Taylor/logs/demo_1.%A_%a.out # Standard output
+#SBATCH -e /standard/vol191/siegristlab/Taylor/log/logs/demo_1.%A_%a.err # Standard error
 #SBATCH -p gpu
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
