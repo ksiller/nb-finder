@@ -5,14 +5,14 @@
 #SBATCH --mem 64G
 #SBATCH -c 16
 #SBATCH -o /standard/vol191/siegristlab/Taylor/logs/demo_1.%A_%a.out # Standard output
-#SBATCH -e /standard/vol191/siegristlab/Taylor/log/logs/demo_1.%A_%a.err # Standard error
+#SBATCH -e /standard/vol191/siegristlab/Taylor/logs/demo_1.%A_%a.err # Standard error
 #SBATCH -p gpu
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=2 ~/cellpose_results/cellpose_script.sh
+### run as: sbatch --array=2 ~/standard/vol191/siegristlab/Taylor/cellpose_results/cellpose_script.sh
 ### sacct -j 54071009
-### cat /scratch/tn6a/logs/demo_1.54068919_2.out
+### cat /standard/vol191/siegristlab/Taylor/logs/demo_1.54068919_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=1
 
