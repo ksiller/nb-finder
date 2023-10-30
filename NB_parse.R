@@ -38,4 +38,4 @@ nMasks
 
 message("writing output")
 write.table(data.table(file=file, nMasks=nMasks, quote=F, row.names=F, sep=",", col.names=F,
-          file=paste(file, ".nMasks", sep=""))
+          file=paste(file, ".nMasks", sep="")))
