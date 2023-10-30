@@ -14,7 +14,7 @@
 ### sacct -j 54071009
 ### cat /standard/vol191/siegristlab/Taylor/logs/demo_1.54068919_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
-### SLURM_ARRAY_TASK_ID=1
+### SLURM_ARRAY_TASK_ID=2
 
 ### load modules
   module load fiji/1.53t
@@ -22,13 +22,16 @@
   module load gcc/9.2.0 openmpi/3.1.6 R/4.2.1
 
 ### path path
-  input_files_txt=/standard/vol191/siegristlab/Taylor/cellpose_results/new_tifs.txt
+  ### ls -d /standard/vol191/siegristlab/Taylor/processed.in.cellpose/test_process_tiffs/* > /scratch/aob2x/new_tifs.txt
+  #input_files_txt=/scratch/aob2x/new_tifs.txt
+  input_files_txt=
   repo_path=/standard/vol191/siegristlab/Taylor/nb-finder
   results_path=/standard/vol191/siegristlab/Taylor/cellpose_results/
   img_file=$( cat ${input_files_txt} | sed "${SLURM_ARRAY_TASK_ID}q;d" )
   img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
   echo ${img_file}
+  ls -lh ${img_file}
 
 ## set up RAM disk
   ### SLURM_JOB_ID=1;SLURM_ARRAY_TASK_ID=1

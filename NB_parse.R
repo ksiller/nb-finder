@@ -5,7 +5,7 @@
 args = commandArgs(trailingOnly=TRUE)
 file=as.character(args[1])
 
-#file="me10247.animal9.0.0.0.0.0-NB_seg.npy"
+#file="/dev/shm/aob2x/1_1/me10247.animal10.0.0.0.0.0-NB_seg.npy"
 
 
 # load reticulate and use it to load numpy
@@ -37,5 +37,5 @@ nMasks
  #  zmask[,list(nZ=length(unique(z))), list(uniq)]
 
 message("writing output")
-write.table(data.table(file=file, nMasks=nMasks, quote=F, row.names=F, sep=",", col.names=F,
-          file=paste(file, ".nMasks", sep="")))
+write.table(data.table(file=file, nMasks=nMasks), quote=F, row.names=F, sep=",", col.names=F,
+          file=paste(file, ".nMasks", sep=""))
