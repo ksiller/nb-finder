@@ -45,7 +45,7 @@
         iter=${1} # iter=2
         FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f1 -d',' )
         CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f2 -d',' )
-        ANISOTROPY=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f3 -d',' )
+        STITCH_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f3 -d',' )
         medianxy=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f4 -d',' )
         medianz=$( cat /standard/vol191/siegristlab/Taylor/settings.table.csv | sed "${iter}q;d" | cut -f5 -d',' )
 
@@ -84,6 +84,7 @@
         --chan 0 \
         --flow_threshold 0.4 \
         --cellprob_threshold 0.5 \
+        --stitch_threshold 0.4 \
         --anisotropy 5
 
       ### parse cellpose
