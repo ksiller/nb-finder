@@ -53,7 +53,7 @@
         img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
         output_path=${3} # output_path=$tmpdir
-        output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}
+        output_file=${output_path}/${img_stem}.${medianxy}.${medianz}.${FLOW_THRESHOLD}.${CELLPROB_THRESHOLD}.${ANISOTROPY}.tif
         ls -lh ${img_file}
         echo $output_file
 
