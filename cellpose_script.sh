@@ -111,7 +111,7 @@
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=5
+  nJobs=7
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
