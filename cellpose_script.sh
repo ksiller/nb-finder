@@ -24,7 +24,7 @@
 ### path path
   ### ls -d /standard/vol191/siegristlab/Taylor/processed.in.cellpose/test_process_tiffs/* > /scratch/aob2x/new_tifs.txt
   #input_files_txt=/scratch/aob2x/new_tifs.txt
-  input_files_txt=
+  input_files_txt=/standard/vol191/siegristlab/Taylor/cellpose_results/new_tifs.txt
   repo_path=/standard/vol191/siegristlab/Taylor/nb-finder
   results_path=/standard/vol191/siegristlab/Taylor/cellpose_results/
   img_file=$( cat ${input_files_txt} | sed "${SLURM_ARRAY_TASK_ID}q;d" )
