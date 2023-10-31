@@ -10,7 +10,7 @@
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=2 /standard/vol191/siegristlab/Taylor/nb-finder/cellpose_script.sh
+### run as: sbatch --array=1-10 /standard/vol191/siegristlab/Taylor/nb-finder/cellpose_script.sh
 ### sacct -j 54071009
 ### cat /standard/vol191/siegristlab/Taylor/logs/demo_1.54068919_2.out
 # ijob -A berglandlab -c10 -p gpu --mem=64G --gres=gpu
@@ -85,9 +85,9 @@
         --pretrained_model nuclei \
         --diameter 30 \
         --chan 0 \
-        --flow_threshold 0.4 \
-        --cellprob_threshold 0.5 \
-        --stitch_threshold 0.4 \
+        --flow_threshold ${FLOW_THRESHOLD} \
+        --cellprob_threshold ${CELLPROB_THRESHOLD} \
+        --stitch_threshold ${STITCH_THRESHOLD} \
         --anisotropy 5
 
       ### parse cellpose
@@ -111,7 +111,6 @@
 
 ### iterate through
   nJobs=$( wc -l /standard/vol191/siegristlab/Taylor/settings.table.csv | cut -f1 -d' ' )
-  nJobs=7
   parallel runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
 
 ### save results and clean up
