@@ -2,7 +2,7 @@
 
 #SBATCH -J cellpose # A single job name for the array
 #SBATCH -t 4:00:00 ### 15 seconds
-#SBATCH --mem 64G
+#SBATCH --mem 350G
 #SBATCH -c 16
 #SBATCH -o /standard/vol191/siegristlab/Taylor/logs/demo_1.%A_%a.out # Standard output
 #SBATCH -e /standard/vol191/siegristlab/Taylor/logs/demo_1.%A_%a.err # Standard error
