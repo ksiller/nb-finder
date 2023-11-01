@@ -85,9 +85,9 @@
         --pretrained_model nuclei \
         --diameter 30 \
         --chan 0 \
-        --flow_threshold 0.5 \
-        --cellprob_threshold 0.4 \
-        --stitch_threshold 0.5 \
+        --flow_threshold ${FLOW_THRESHOLD} \
+        --cellprob_threshold ${CELLPROB_THRESHOLD} \
+        --stitch_threshold ${STITCH_THRESHOLD} \
         --anisotropy 5
 
       ### parse cellpose
