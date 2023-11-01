@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #SBATCH -J cellpose # A single job name for the array
-#SBATCH -t 0:10:00 ### 15 seconds
+#SBATCH -t 0:15:00 ### 15 seconds
 #SBATCH --mem 64G
 #SBATCH -c 16
 #SBATCH -o /standard/vol191/siegristlab/Taylor/logs/demo_1.%A_%a.out # Standard output
@@ -10,9 +10,9 @@
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=1-10 /standard/vol191/siegristlab/Taylor/nb-finder/cellpose_script.v2.sh
-### sacct -j 54071009
-### cat /standard/vol191/siegristlab/Taylor/logs/demo_1.54068919_2.out
+### run as: sbatch --array=2-1944 ~/nb-finder/cellpose_script.v2.sh
+### sacct -j 54728273
+### cat /standard/vol191/siegristlab/Taylor/logs/demo_1.54728273_1.err
 # ijob -A berglandlab -c16 -p gpu --mem=64G --gres=gpu
 ### SLURM_ARRAY_TASK_ID=2
 
@@ -23,22 +23,10 @@
   source activate cellpose
 
 ### path path
-  ### ls -d /standard/vol191/siegristlab/Taylor/processed.in.cellpose/test_process_tiffs/* > /scratch/aob2x/new_tifs.txt
-  #input_files_txt=/standard/vol191/siegristlab/Taylor/cellpose_results/new_tifs.txt
-  #repo_path=/standard/vol191/siegristlab/Taylor/nb-finder
-  #results_path=/standard/vol191/siegristlab/Taylor/cellpose_results/
-
   repo_path=~/nb-finder
   results_path=/standard/vol191/siegristlab/Taylor/aob_cellpose_results/
 
-## set up RAM disk
-  ### SLURM_JOB_ID=1;SLURM_ARRAY_TASK_ID=1
-  #[ ! -d /dev/shm/$USER/ ] && mkdir /dev/shm/$USER/
-  #[ ! -d /dev/shm/$USER/${SLURM_JOB_ID} ] && mkdir /dev/shm/$USER/${SLURM_JOB_ID}
-  #[ ! -d /dev/shm/$USER/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID} ] && mkdir /dev/shm/$USER/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-  #tmpdir=/dev/shm/$USER/${SLURM_JOB_ID}_${SLURM_ARRAY_TASK_ID}
-  #
-  #echo "Temp dir is $tmpdir"
+## set up tmpdir
   tmpdir=/scratch/aob2x/aob_cellpose_results
 
 ### function
@@ -118,12 +106,5 @@
   }
   export -f runCellpose
 
-### iterate through
-  #parallel -j 10 --progress runCellpose ::: $( seq 2 1 ${nJobs} ) ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
-  #parallel --progress runCellpose ::: 2  ::: ${img_file} ::: ${tmpdir} ::: ${repo_path}
-  # SLURM_ARRAY_TASK_ID=555
-  runCellpose ${SLURM_ARRAY_TASK_ID} ${tmpdir} ${repo_path}
-
-### save results and clean up
-
-  #rm -fr ${tmpdir}
+### run cellpose
+    runCellpose ${SLURM_ARRAY_TASK_ID} ${tmpdir} ${repo_path}
