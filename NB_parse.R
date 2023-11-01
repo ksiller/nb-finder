@@ -5,7 +5,7 @@
 args = commandArgs(trailingOnly=TRUE)
 file=as.character(args[1])
 
-#file="/dev/shm/aob2x/1_1/me10247.animal10.0.0.0.0.0-NB_seg.npy"
+#file="/scratch/aob2x/aob_cellpose_results/me10247.animal10.0.0.0.0.0-NB_seg.npy"
 
 
 # load reticulate and use it to load numpy
