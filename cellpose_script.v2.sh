@@ -10,7 +10,7 @@
 #SBATCH --gres=gpu
 #SBATCH --account berglandlab
 
-### run as: sbatch --array=2-1944 ~/nb-finder/cellpose_script.v2.sh
+### run as: sbatch --array=2-2187 ~/nb-finder/cellpose_script.v2.sh
 ### sacct -j 54728273
 ### cat /standard/vol191/siegristlab/Taylor/logs/demo_1.54728273_1.err
 # ijob -A berglandlab -c16 -p gpu --mem=64G --gres=gpu
@@ -24,22 +24,22 @@
 
 ### path path
   repo_path=~/nb-finder
-  results_path=/standard/vol191/siegristlab/Taylor/aob_cellpose_results/
+  results_path=/standard/vol191/siegristlab/Taylor/aob_cellpose_results_2/
 
 ## set up tmpdir
-  tmpdir=/scratch/aob2x/aob_cellpose_results
+  tmpdir=/scratch/tn6a/aob_cellpose_results
 
 ### function
   runCellpose() {
       ### specify parameters
         iter=${1} # iter=2
-        FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.alan.csv | sed "${iter}q;d" | cut -f1 -d',' )
-        CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.alan.csv | sed "${iter}q;d" | cut -f2 -d',' )
-        STITCH_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.alan.csv | sed "${iter}q;d" | cut -f3 -d',' )
-        medianxy=$( cat /standard/vol191/siegristlab/Taylor/settings.table.alan.csv | sed "${iter}q;d" | cut -f4 -d',' )
-        medianz=$( cat /standard/vol191/siegristlab/Taylor/settings.table.alan.csv | sed "${iter}q;d" | cut -f5 -d',' )
+        FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f1 -d',' )
+        CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f2 -d',' )
+        STITCH_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f3 -d',' )
+        medianxy=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f4 -d',' )
+        medianz=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f5 -d',' )
 
-        img_file=$( cat /standard/vol191/siegristlab/Taylor/settings.table.alan.csv | sed "${iter}q;d" | cut -f6 -d',' )
+        img_file=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f6 -d',' )
         img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
 
         output_path=${2} # output_path=$tmpdir
@@ -78,7 +78,7 @@
 
       ### parse cellpose
         repo_path=${3} #
-        # NB_output_file=/scratch/aob2x/aob_cellpose_results/me10247.animal10.0.0.0.0.0-NB.tif
+        # NB_output_file=/scratch/tn6a/aob_cellpose_results/me10247.animal10.0.0.0.0.0-NB.tif
 
         cellpose_output_file=$( echo ${NB_output_file} | sed 's/\.tif/_seg.npy/g' )
         ls -lhd $cellpose_output_file
