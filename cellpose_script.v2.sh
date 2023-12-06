@@ -23,7 +23,7 @@
   source activate cellpose
 
 ### path path
-  repo_path=~/nb-finder
+  repo_path=/standard/vol191/siegristlab/Taylor/nb-finder
   results_path=/standard/vol191/siegristlab/Taylor/aob_cellpose_results_2/
 
 ## set up tmpdir
