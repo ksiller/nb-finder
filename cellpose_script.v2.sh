@@ -93,11 +93,15 @@
       ### clean up
         ls -lha ${cellpose_output_file}
         cellpose_output_tiff=$( echo ${NB_output_file} | sed 's/\.tif/_cp_masks.tif/g' )
+        #merge mask file with original file
+        composite_file=$( echo ${NB_output_file} | sed 's/\.tif/composite.tif/g' )
+        ImageJ-linux64 --headless --ij2 --mem=60G --run /standard/vol191/siegristlab/Taylor/nb-finder/Merge_Images.py $NB_output_file $cellpose_output_tiff $composite_file
         ls -lhd $cellpose_output_file
         ls -lhd $cellpose_output_tiff
 
         cp ${cellpose_output_file}.nMasks ${results_path}
         cp $cellpose_output_tiff ${results_path}
+        cp $composite_file ${results_path}
 
         # rm ${cellpose_output_file}
         # rm ${NB_output_file}
