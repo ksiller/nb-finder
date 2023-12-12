@@ -22,7 +22,7 @@ from jarray import array
 
 inputimg = IJ.openImage(imgfile.getPath())
 if outputdir is None:
-    outputdir = imgfile.getParent(outputdir)
+    outputdir = imgfile.getParent()
 else:
     outputdir = outputdir.getAbsolutePath()
                 
@@ -33,7 +33,7 @@ if show and GraphicsEnvironment.isHeadless():
 logger.log(LogLevel.INFO, "nucleiCh=%d, membraneCh=%d, medianXY=%f, medianZ=%f, adjust=%s, show=%s" % (nucleiCh, membraneCh, medianXY, medianZ, adjust, show))
 logger.log(LogLevel.INFO, "outputdir=%s" % outputdir)
 
-if outputfile is None:
+if outputfile is None or outputfile == "":
     outputfile = inputimg.getTitle()
 outputfile = outputfile[:outputfile.rindex(".")] + "-NB.tif"
 print outputfile
