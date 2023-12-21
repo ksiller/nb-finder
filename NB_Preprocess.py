@@ -20,34 +20,37 @@ from ij.plugin import ImageCalculator, RGBStackMerge, ChannelSplitter, ZProjecto
 from ij.plugin.filter import ParticleAnalyzer
 from jarray import array
 
-inputimg = IJ.openImage(imgfile.getPath())
 if outputdir is None:
     outputdir = imgfile.getParent()
 else:
     outputdir = outputdir.getAbsolutePath()
-                
-logger.log(LogLevel.INFO, "Processing of %s" % imgfile.getPath())
+if outputfile is None or outputfile == "":
+    outputfile = imgfile.getName()
+    outputfile = outputfile[:outputfile.rindex(".")] + "-NB.tif"
+
 if show and GraphicsEnvironment.isHeadless():
     show = False
     logger.log(LogLevel.INFO, 'Running headless, ignoring "show" option.')
+
+# open image
+inputimg = IJ.openImage(imgfile.getPath())                
+logger.log(LogLevel.INFO, "Processing of %s" % imgfile.getPath())
 logger.log(LogLevel.INFO, "nucleiCh=%d, membraneCh=%d, medianXY=%f, medianZ=%f, adjust=%s, show=%s" % (nucleiCh, membraneCh, medianXY, medianZ, adjust, show))
 logger.log(LogLevel.INFO, "outputdir=%s" % outputdir)
 
-if outputfile is None or outputfile == "":
-    outputfile = inputimg.getTitle()
-outputfile = outputfile[:outputfile.rindex(".")] + "-NB.tif"
-print outputfile
-
+# split and create copy of nuclei channel
 channels = ChannelSplitter.split(inputimg)
 nucleiCh = min(nucleiCh, len(channels))
 nucleiImg = channels[nucleiCh-1].duplicate()
 
+# enhance contrast
 if adjust:
     for z in range(nucleiImg.getNSlices()):
         nucleiImg.setSlice(z+1)
         IJ.run(nucleiImg, "Enhance Contrast", "saturated=0.35")
         IJ.run(nucleiImg, "Apply LUT", "slice")
 
+# apply filter to remoev noise
 IJ.run(nucleiImg, "Median 3D...", "x=" + str(medianXY) + " y=" + str(medianXY) +" z=" + str(medianZ))
 
 # optional
@@ -63,15 +66,15 @@ if membraneCh > 0 and membraneCh <= len(channels):
     nucleiImg = ImageCalculator.run(nucleiImg.duplicate(), membraneImg, "Subtract create 32-bit stack")
     IJ.run(nucleiImg, "Median 3D...", "x=" + str(medianXY) + " y=" + str(medianXY) +" z=" + str(medianZ))
 
+# save and show
 nucleiImg.setTitle(outputfile)
 nucleiFile = os.path.join(outputdir, outputfile)
-logger.log(LogLevel.INFO, "Saving %s" % nucleiFile)
 IJ.saveAsTiff(nucleiImg, nucleiFile)
 if show:
     nucleiImg.show()
+logger.log(LogLevel.INFO, "Saved %s" % os.path.join(outputdir, nucleiImg.getTitle()))
 
-logger.log(LogLevel.INFO, "Completed %s" % imgfile.getPath())
-
+# clean up
 if GraphicsEnvironment.isHeadless():
     os.system("kill %d" % os.getpid())
 
