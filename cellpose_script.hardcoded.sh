@@ -33,11 +33,11 @@
   runCellpose() {
       ### specify parameters
         iter=${1} # iter=2
-        FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f1 -d',' )
-        CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f2 -d',' )
-        STITCH_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f3 -d',' )
-        medianxy=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f4 -d',' )
-        medianz=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f5 -d',' )
+        #FLOW_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f1 -d',' )
+        #CELLPROB_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f2 -d',' )
+        #STITCH_THRESHOLD=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f3 -d',' )
+        medianxy=5
+        medianz=10
 
         img_file=$( cat /standard/vol191/siegristlab/Taylor/settings.table.2.csv | sed "${iter}q;d" | cut -f6 -d',' )
         img_stem=$( echo ${img_file} | rev | cut -f1 -d'/' | rev | sed 's/.tif//g' )
@@ -71,9 +71,9 @@
         --pretrained_model nuclei \
         --diameter 30 \
         --chan 0 \
-        --flow_threshold ${FLOW_THRESHOLD} \
-        --cellprob_threshold ${CELLPROB_THRESHOLD} \
-        --stitch_threshold ${STITCH_THRESHOLD} \
+        --flow_threshold 0.4 \
+        --cellprob_threshold 0 \
+        --stitch_threshold 0 \
         --anisotropy 5
 
       ### parse cellpose
